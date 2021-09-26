@@ -64,46 +64,52 @@
     </section>
 
     <script>
-canvas = document.getElementById("bg")
-ctx = canvas.getContext("2d")
+        canvas = document.getElementById("bg")
+        ctx = canvas.getContext("2d")
 
-particles = []
-
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
-
-initParticle = () => {
-    return {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 2.5,
-        alpha: Math.random() * 0.5,
-        dx: 0, //Math.random() - 0.5,
-        dy: Math.random(), //Math.random() - 0.5,
-    }
-}
-
-for (var i = 0; i < 1000; i++) {
-    particles.push(initParticle())
-}
-
-setInterval(function () {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    for (p in particles) {
-        particles[p].alpha -= 0.001
-        if (particles[p].alpha <= 0) {
-            particles[p] = initParticle()
+        particles = []
+        resize = () => {
+            canvas.width = window.innerWidth
+            canvas.height = window.innerHeight
         }
-        particles[p].x += particles[p].dx
-        particles[p].y += particles[p].dy
+        window.onresize = resize
+        resize()
 
-        ctx.beginPath()
-        ctx.arc(particles[p].x, particles[p].y, particles[p].radius, 0, Math.PI * 2, false)
-        ctx.fillStyle = "rgba(255, 255, 255, " + particles[p].alpha + ")"
-        ctx.fill()
-    }
-}, 1000 / 60)
+        initParticle = () => {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * (1.0 + (window.innerWidth / 1000.0)),
+                alpha: Math.random() * 0.5,
+                dx: 0, //Math.random() - 0.5,
+                dy: Math.random() * 0.8, //Math.random() - 0.5,
+            }
+        }
+
+        for (var i = 0; i < 500; i++) {
+            particles.push(initParticle())
+        }
+
+        setInterval(function () {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+            for (p in particles) {
+                particles[p].alpha -= 0.001
+                if (particles[p].alpha <= 0) {
+                    particles[p] = initParticle()
+                }
+                if (particles[p].y > canvas.height) {
+                    particles[p].y = 0
+                }
+                particles[p].x += particles[p].dx
+                particles[p].y += particles[p].dy
+
+                ctx.beginPath()
+                ctx.arc(particles[p].x, particles[p].y, particles[p].radius, 0, Math.PI * 2, false)
+                ctx.fillStyle = "rgba(255, 255, 255, " + particles[p].alpha + ")"
+                ctx.fill()
+            }
+        }, 1000 / 60)
     </script>
 
 </body>
